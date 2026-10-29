@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>@@TITLE@@ · UI 比较报告</title>
+  <style>
+    :root { color-scheme: light; --ink:#172b36; --muted:#526570; --line:#d6e0e5; --paper:#fff; --canvas:#f3f6f7; --accent:#00695f; --space:16px; }
+    * { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    body { margin:0; color:var(--ink); background:var(--canvas); font:15px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1200px; padding:32px 24px 64px; margin:auto; }
+    h1,h2,p { margin:0; } h1 { font-size:28px; line-height:1.3; overflow-wrap:anywhere; } h2 { font-size:20px; overflow-wrap:anywhere; }
+    .report-header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; }
+    .eyebrow,.muted,dt { color:var(--muted); } .eyebrow { font-size:13px; letter-spacing:.08em; }
+    .scope { padding:12px 16px; border-left:4px solid var(--accent); background:#e8f3f0; margin:20px 0; }
+    .counts { display:flex; gap:24px; flex-wrap:wrap; margin:24px 0; } .counts strong { font-size:24px; margin-right:4px; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:12px; align-items:end; padding:16px 0; border-block:1px solid var(--line); }
+    label { font-size:13px; font-weight:600; } select,input[type=search] { display:block; width:100%; min-height:40px; padding:8px 12px; margin-top:4px; border:1px solid #8498a3; border-radius:4px; background:var(--paper); color:var(--ink); font:inherit; }
+    .search { flex:1; min-width:160px; } .filter-count { padding:8px 0; margin-left:auto; }
+    button,a,input,select,summary,.zoom-viewport { outline-offset:4px; } :focus-visible { outline:3px solid var(--accent); }
+    button { min-height:40px; padding:8px 12px; border:1px solid #8498a3; border-radius:4px; background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; }
+    button[aria-pressed=true] { background:var(--ink); color:#fff; border-color:var(--ink); }
+    a { color:var(--accent); text-underline-offset:3px; } .case { background:var(--paper); padding:24px; margin-top:24px; border:1px solid var(--line); border-radius:6px; }
+    .case-header { display:flex; align-items:start; justify-content:space-between; gap:12px; } .badge { display:inline-block; white-space:nowrap; border:1px solid currentColor; border-radius:4px; padding:3px 8px; font-size:13px; font-weight:700; }
+    .pass { color:#12623c; background:#eaf7ee; } .fail { color:#a2212b; background:#fff0f1; } .inconclusive { color:#765000; background:#fff6dd; }
+    .metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; border-block:1px solid var(--line); padding:12px 0; margin:20px 0; } dt { font-size:13px; } dd { margin:0; font-size:17px; overflow-wrap:anywhere; }
+    .view-controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .zoom-viewport { overflow:auto; max-height:700px; background:#e8edf0; border:1px solid var(--line); }
+    .image-stage { position:relative; width:100%; max-width:min(720px,calc(min(700px,65vh) * var(--image-ratio))); margin:auto; overflow:hidden; background:repeating-conic-gradient(#eef1f3 0% 25%,#fff 0% 50%) 0/16px 16px; }
+    .zoomed .image-stage { width:200%; max-width:calc(min(720px,calc(min(700px,65vh) * var(--image-ratio))) * 2); }
+    .image-stage img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; } .image-stage [data-image=reference] { z-index:1; clip-path:inset(0 50% 0 0); }
+    .divider { position:absolute; z-index:2; top:0; bottom:0; left:50%; width:2px; background:#fff; box-shadow:0 0 0 1px #172b36; pointer-events:none; }
+    .slider-label { display:flex; align-items:center; gap:12px; margin:12px 0; } input[type=range] { flex:1; min-width:64px; accent-color:var(--accent); } output { min-width:4ch; }
+    .issues,.invalid-label { color:#765000; background:#fff6dd; padding:12px 16px; margin-bottom:16px; } .issues { padding-left:36px; overflow-wrap:anywhere; }
+    .invalid-images { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; } figure { margin:0; } figure img { width:100%; max-height:560px; object-fit:contain; background:var(--canvas); } figcaption { color:var(--muted); font-size:13px; }
+    .downloads { display:flex; flex-wrap:wrap; gap:16px; margin:16px 0; } details { border-top:1px solid var(--line); padding-top:12px; } summary { cursor:pointer; }
+    pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; max-height:400px; overflow:auto; padding:12px; background:var(--canvas); }
+    .next-action { margin-top:16px; font-size:13px; } .empty { padding:32px 16px; color:var(--muted); text-align:center; background:var(--canvas); }
+    #no-results { margin-top:24px; } footer { margin-top:32px; color:var(--muted); font-size:13px; }
+    @media(max-width:767px) { main { padding:24px 16px 40px; } .case { padding:16px; } .report-header,.case-header { align-items:start; flex-direction:column; } .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .invalid-images { grid-template-columns:1fr; } .slider-label { flex-wrap:wrap; } .zoom-viewport { max-height:65vh; } }
+    @media print { .toolbar,.view-controls,.slider-label,.downloads { display:none; } .case { break-inside:avoid; } .zoom-viewport { max-height:none; } }
+  </style>
+</head>
+<body>
+<main>
+  <header class="report-header"><div><p class="eyebrow">FE UI REVIEW · PIXEL EVIDENCE</p><h1>@@TITLE@@</h1><p class="muted">@@TIME@@</p></div>@@VERDICT@@</header>
+  <p class="scope">本报告仅判定已采集图片的像素差异。页面状态、布局、关键区域与可访问性仍需 Agent 审查；设备预设不代表真机实测。必选案例决定汇总结果，可选案例仍完整保留。</p>
+  <div class="counts" aria-label="案例统计"><span><strong>@@TOTAL@@</strong>总数 / @@REQUIRED@@ 必选</span><span><strong>@@PASS@@</strong>PASS</span><span><strong>@@FAIL@@</strong>FAIL</span><span><strong>@@INCONCLUSIVE@@</strong>INCONCLUSIVE</span></div>
+  <div aria-label="按采集策略独立统计">@@STRATEGYSUMMARY@@</div>
+  <div class="toolbar"><label>结果<select id="verdict-filter"><option value="all">全部结果</option><option>PASS</option><option>FAIL</option><option>INCONCLUSIVE</option></select></label><label>平台<select id="platform-filter"><option value="all">全部平台</option>@@PLATFORMS@@</select></label><label class="search">搜索案例<input id="case-search" type="search" placeholder="案例名、设备或状态"></label><p id="visible-count" class="muted filter-count" role="status" aria-live="polite"></p></div>
+  <label>采集来源<select id="strategy-filter"><option value="all">全部来源</option>@@STRATEGIES@@</select></label>
+  <noscript><p class="scope">JavaScript 未启用：仍可浏览全部图片与指标；筛选和拖动功能不可用。</p></noscript>
+  <div id="cases">@@CASES@@</div><p id="no-results" class="empty" hidden>没有符合条件的案例，请调整筛选条件。</p>
+  <footer>图片已嵌入，可离线查看。放大、拖动和视图切换只影响展示，不修改图片、阈值或判定。原始证据与完整指标见同目录 report.json、summary.md 和 cases/。</footer>
+</main>
+<script>
+  const cards = [...document.querySelectorAll('.case')];
+  const verdict = document.querySelector('#verdict-filter');
+  const platform = document.querySelector('#platform-filter');
+  const strategy = document.querySelector('#strategy-filter');
+  const search = document.querySelector('#case-search');
+  function filterCases() {
+    let count = 0;
+    for (const card of cards) {
+      card.hidden = !((verdict.value === 'all' || card.dataset.verdict === verdict.value) && (platform.value === 'all' || card.dataset.platform === platform.value) && (strategy.value === 'all' || card.dataset.strategy === strategy.value) && card.dataset.search.includes(search.value.trim().toLowerCase()));
+      if (!card.hidden) count++;
+    }
+    document.querySelector('#visible-count').textContent = `显示 ${count} / ${cards.length} 个案例`;
+    document.querySelector('#no-results').hidden = count !== 0;
+  }
+  verdict.addEventListener('change', filterCases);
+  platform.addEventListener('change', filterCases);
+  strategy.addEventListener('change', filterCases);
+  search.addEventListener('input', filterCases);
+  filterCases();
+  for (const card of cards) {
+    const stage = card.querySelector('.image-stage');
+    if (!stage) continue;
+    const slider = card.querySelector('[data-slider]');
+    const divider = card.querySelector('.divider');
+    const reference = card.querySelector('[data-image="reference"]');
+    const images = [...card.querySelectorAll('[data-image]')];
+    function setView(mode) {
+      stage.dataset.mode = mode;
+      for (const image of images) image.hidden = mode === 'split' ? !['reference', 'actual'].includes(image.dataset.image) : image.dataset.image !== mode;
+      reference.style.clipPath = mode === 'split' ? `inset(0 ${100 - Number(slider.value)}% 0 0)` : 'none';
+      divider.hidden = mode !== 'split';
+      divider.style.left = `${slider.value}%`;
+      slider.disabled = mode !== 'split';
+      card.querySelector('output').value = `${slider.value}%`;
+      for (const button of card.querySelectorAll('[data-view]')) button.setAttribute('aria-pressed', String(button.dataset.view === mode));
+    }
+    for (const button of card.querySelectorAll('[data-view]')) button.addEventListener('click', () => setView(button.dataset.view));
+    slider.addEventListener('input', () => setView('split'));
+    const zoom = card.querySelector('[data-zoom]');
+    zoom.addEventListener('click', () => {
+      const expanded = card.querySelector('.zoom-viewport').classList.toggle('zoomed');
+      zoom.setAttribute('aria-pressed', String(expanded));
+      zoom.textContent = expanded ? '恢复适配' : '放大 2×';
+    });
+    setView('split');
+  }
+</script>
+</body>
+</html>

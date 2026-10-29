@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "suiteId": "example-captured-pages",
+  "mode": "review",
+  "defaults": {
+    "environment": {"locale": "en-US", "timezone": "Asia/Shanghai", "theme": "light"},
+    "thresholds": {"source": "example-only-strict", "pixel": {"channelDelta": 0, "maxDiffRatio": 0}}
+  },
+  "cases": [
+    {
+      "id": "home-phone-390",
+      "deviceProfile": "web-phone-390",
+      "reference": {"type": "image", "path": "captures/home-390-reference.png"},
+      "target": {"type": "screenshot", "platform": "web", "path": "captures/home-390-actual.png"},
+      "state": {"name": "home-default"},
+      "capture": {"expectedPixelSize": {"width": 390, "height": 844}}
+    },
+    {
+      "id": "home-desktop-1440",
+      "required": false,
+      "deviceProfile": "web-desktop-1440",
+      "reference": {"type": "image", "path": "captures/home-1440-reference.png"},
+      "target": {"type": "screenshot", "platform": "web", "path": "captures/home-1440-actual.png"},
+      "state": {"name": "home-default"},
+      "capture": {"expectedPixelSize": {"width": 1440, "height": 900}}
+    }
+  ]
+}

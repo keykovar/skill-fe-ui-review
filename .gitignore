@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.ui-review/
+.vite/
+node_modules/
+.venv/
+.env
+.env.*
+!.env.example
+
+# Local project adapters can contain private screenshots and design assets.
+/adapters/

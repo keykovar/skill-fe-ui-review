@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "description": "Generic capture presets, not verified physical-device models. No OS version or safe-area values are inferred.",
+  "profiles": {
+    "web-phone-320": {"platform": "web", "environment": {"viewport": {"width": 320, "height": 568}, "dpr": 1, "orientation": "portrait"}},
+    "web-phone-360": {"platform": "web", "environment": {"viewport": {"width": 360, "height": 800}, "dpr": 1, "orientation": "portrait"}},
+    "web-phone-390": {"platform": "web", "environment": {"viewport": {"width": 390, "height": 844}, "dpr": 1, "orientation": "portrait"}},
+    "web-phone-430": {"platform": "web", "environment": {"viewport": {"width": 430, "height": 932}, "dpr": 1, "orientation": "portrait"}},
+    "web-tablet-768": {"platform": "web", "environment": {"viewport": {"width": 768, "height": 1024}, "dpr": 1, "orientation": "portrait"}},
+    "web-tablet-landscape": {"platform": "web", "environment": {"viewport": {"width": 1024, "height": 768}, "dpr": 1, "orientation": "landscape"}},
+    "web-desktop-1440": {"platform": "web", "environment": {"viewport": {"width": 1440, "height": 900}, "dpr": 1, "orientation": "landscape"}},
+    "web-desktop-1920": {"platform": "web", "environment": {"viewport": {"width": 1920, "height": 1080}, "dpr": 1, "orientation": "landscape"}},
+    "ios-phone-390": {"platform": "ios", "environment": {"logicalSize": {"width": 390, "height": 844}, "logicalUnit": "pt", "scale": 3, "orientation": "portrait"}},
+    "android-phone-360": {"platform": "android", "environment": {"logicalSize": {"width": 360, "height": 800}, "logicalUnit": "dp", "density": 3, "fontScale": 1, "orientation": "portrait"}}
+  }
+}

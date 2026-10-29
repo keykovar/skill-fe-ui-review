@@ -1,0 +1,4 @@
+interface:
+  display_name: "FE UI Review"
+  short_description: "对照 Figma 审查并修复 Web 与移动端 UI"
+  default_prompt: "使用 $fe-ui-review 对比 Figma 与目标 UI，输出视觉差异、修复方案，并在授权后修复和复验。"

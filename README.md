@@ -90,12 +90,20 @@ python3 "skills/fe-ui-review/scripts/run_suite.py" \
 
 ## 验证
 
+测试基准环境为 Python 3.12、Node.js 24 与 `requirements-dev.txt` 中固定版本的 Pillow。
+需要准备新的测试环境时，可在自行创建的 Python 虚拟环境中执行
+`python -m pip install -r requirements-dev.txt`；已有兼容依赖时可直接运行：
+
 ```bash
 python3 -B -m unittest discover -s "tests" -p "test_*.py"
 node --test "tests/test_capture_web.mjs"
 ```
 
 这些测试验证工具行为与比较契约，不能代替真实页面或设备验收。
+
+[GitHub Actions 工作流](.github/workflows/tests.yml) 配置为在推送到 `main`、向 `main`
+提交 PR 或手动触发时，运行上述测试并校验示例清单。工作流使用 Ubuntu、只读仓库权限和
+固定提交版本的官方 Actions，不访问 Figma、业务站点或真实账号。
 
 ## 判定边界
 
